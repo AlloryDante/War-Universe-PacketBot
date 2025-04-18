@@ -1,0 +1,75 @@
+
+https://eu.api.waruniverse.space/meta-info
+https://na.api.waruniverse.space/meta-info
+https://tr.api.waruniverse.space/meta-info
+https://demo.api.waruniverse.space/meta-info
+
+GameEvent(R): {"id":11,"data":null} - Death??
+
+Distanta - 2000 (20 units)
+
+
+id: 17 - lazy data update coords
+    18 - to target coords
+id: 12 - name
+id: 13 - Clan name
+14 - Corporation
+id: 42 = update
+id: 31 - config change
+id: 20 - Select Ship
+    22 - inAttack
+    23 - Attack (Reliable)
+id: 33 - Change Ammo
+id: 25 - Current Health
+    26 - Max Health
+id: 27 - Current Shield
+    28 - Max shield
+id: 31 - Speed
+id: 32 -  Drone Array
+    14 - Faction 2- solar 3 - orion
+    15 - Faction??
+    29 - cargo now
+    30 - cargo capacity
+    38 - shield
+    24 - id nava 105 - perun 104 - falcon
+
+Collectible type0 = box
+                1 = cargo 
+
+UserInfoResponsePacket
+5 - exp
+6 - honor
+3 - btc
+4 - PLT
+7 - Level
+
+8 - lasers
+    type 1 x1 
+        2 x2
+        3 x3
+        4 x4
+        5 GLS
+        6 MRS
+9 - rockets
+    type 1 x1
+    2 x2
+    3 x3
+10 - Energy
+    1 EE
+    2 EN
+    3 EG
+    4 EM
+
+
+
+{actions:[{actionId:2,data:1000448}]} - Select ship
+{actions:[{actionId:3}]} - Attack
+{actions:[{actionId:4}]} - Stop Attack
+{actions:[{actionId:12,data:2}]} - change Ammo
+50798|   sending 'RocketSwitchRequest' packet... - Change rockets
+[client -> server]RocketSwitchRequest
+{rocketId:3}
+
+sending 'CollectableCollectRequest' packet... - Collect
+[client -> server]CollectableCollectRequest
+{id:11933390}
