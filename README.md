@@ -149,10 +149,10 @@ git clone https://github.com/AlloryDante/War-Universe-PacketBot.git
 cd War-Universe-PacketBot
 ```
 
-2. (OPTIONAL!)Compile the Java client emulator:
+2. (OPTIONAL - Really not required unless you dev the client! )Compile the Java client emulator:
 
 ```bash
-cd
+cd wupacket
 mvn clean verify
 ```
 
