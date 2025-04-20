@@ -1,4 +1,4 @@
-# 🚀 WUPACKET - War Universe Game Bot
+# 🚀 WARANGEL - War Universe Game Bot
 
 <div align="center">
   <img src="https://warangelbot.com/logo.png" alt="Wupacket Logo" width="300">
