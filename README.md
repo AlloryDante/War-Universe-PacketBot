@@ -153,7 +153,7 @@ client.setMode("kill"); // Options: "follow", "kill", "collect", "killcollect"
 
 - Node.js latest version
 - A valid War Universe account
-- Java JDK 22 or higher [![Link](https://download.oracle.com/java/22/archive/jdk-22.0.2_windows-x64_bin.exe)]
+- Java JDK 22 or higher https://download.oracle.com/java/22/archive/jdk-22.0.2_windows-x64_bin.exe
 - Make sure to uninstall all other java installs and when you open cmd and write `java - version` you get something over v22.
 
 ### Installation
