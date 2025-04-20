@@ -145,13 +145,14 @@ client.setMode("kill"); // Options: "follow", "kill", "collect", "killcollect"
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/wupacket.git
-cd wupacket
+git clone https://github.com/AlloryDante/War-Universe-PacketBot.git
+cd War-Universe-PacketBot
 ```
 
-2. Compile the Java client emulator:
+2. (OPTIONAL!)Compile the Java client emulator:
 
 ```bash
+cd
 mvn clean verify
 ```
 
@@ -161,17 +162,17 @@ mvn clean verify
 npm install
 ```
 
-4. Configure your account in `main.js`:
+4. Configure your account in `main.js`. Don't forget to also edit the settings:
 
 ```javascript
 const client = new Client({
-  username: "your_username",
-  password: "your_password",
-  serverId: "eu1",
+  username: "your_username", //Your account username here
+  password: "your_password", //Your account password
+  serverId: "eu1", //or tr1, na1 I think test1 also work for test server
 });
 ```
 
-5. Update the client version and MD5 hash in `modules/general/netClient.js`:
+5. (OPTIONAL) Update the client version and MD5 hash in `modules/general/netClient.js` :
 
 ```javascript
 this.clientVersion = [1, 233, 0]; // Update with current game version
@@ -189,16 +190,7 @@ node main.js
 The bot supports manual control via console commands:
 
 - Press `h` to return to home coordinates
-- Press `Enter` to target a specific ship
-
-## 📊 Statistics
-
-Track your bot's performance with built-in statistics:
-
-- Resources collected
-- Enemies defeated
-- Damage dealt/received
-- Runtime and efficiency metrics
+- Press `Enter` to target a specific ship - you must edit the id inside the scripts
 
 ## ⚠️ Disclaimer
 
