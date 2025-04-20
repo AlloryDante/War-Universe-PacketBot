@@ -29,6 +29,22 @@ Wupacket is a sophisticated automation bot for War Universe, providing advanced 
 - **Equipment Enrichment**: Auto-enhance lasers, rockets, shields, and speed
 - **Material Management**: Specify material types and minimum amounts
 
+#### Enrichment Material IDs
+
+##### Laser Enrichment Materials
+
+- `0`: Disabled
+- `4`: Darkonit
+- `5`: Uranit
+- `7`: Dungid
+
+##### Generator Enrichment Materials
+
+- `0`: Disabled
+- `5`: Uranit
+- `6`: Azurit
+- `8`: Xureon
+
 ### 🛒 Auto-Buying
 
 - **Equipment Purchasing**: Automatically purchase lasers, rockets, and keys
@@ -135,10 +151,10 @@ client.setMode("kill"); // Options: "follow", "kill", "collect", "killcollect"
 
 ### Prerequisites
 
-- Node.js v14.0.0 or higher
+- Node.js latest version
 - A valid War Universe account
-- Java JDK 8 or higher
-- Maven for compiling the Java client emulator
+- Java JDK 22 or higher [![Link](https://download.oracle.com/java/22/archive/jdk-22.0.2_windows-x64_bin.exe)]
+- Make sure to uninstall all other java installs and when you open cmd and write `java - version` you get something over v22.
 
 ### Installation
 

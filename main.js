@@ -43,10 +43,12 @@ const client = new Client({
 //     flying: 2,
 //   },
 //   enrichment: {
-//     lasers: { enabled: true, materialType: 0 },
-//     rockets: { enabled: true, materialType: 0 },
-//     shields: { enabled: true, materialType: 0, amount: 10, minAmount: 10 },
-//     speed: { enabled: true, materialType: 0, amount: 10, minAmount: 10 },
+//     // Laser enrichment materials: 0=Disabled, 4=Darkonit, 5=Uranit, 7=Dungid
+//     lasers: { enabled: true, materialType: 4 }, // Using Darkonit
+//     // Generator enrichment materials: 0=Disabled, 5=Uranit, 6=Azurit, 8=Xureon
+//     rockets: { enabled: true, materialType: 6 }, // Using Azurit
+//     shields: { enabled: true, materialType: 5, amount: 10, minAmount: 10 }, // Using Uranit
+//     speed: { enabled: true, materialType: 8, amount: 10, minAmount: 10 }, // Using Xureon
 //   },
 //   autobuy: {
 //     laser: {
@@ -96,7 +98,9 @@ client.setSettings({
     flying: 2,
   },
   enrichment: {
+    // Laser enrichment materials: 0=Disabled, 4=Darkonit, 5=Uranit, 7=Dungid
     lasers: { enabled: false, materialType: 0 },
+    // Generator enrichment materials: 0=Disabled, 5=Uranit, 6=Azurit, 8=Xureon
     rockets: { enabled: false, materialType: 0 },
     shields: { enabled: false, materialType: 0, amount: 10, minAmount: 10 },
     speed: { enabled: false, materialType: 0, amount: 10, minAmount: 10 },
