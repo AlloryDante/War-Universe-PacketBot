@@ -95,6 +95,57 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.stroke();
   };
 
+  const drawSpaceStation = ({ x, y, radius = 15 }) => {
+    const color = `rgba(255, 255, 255, 0.5)`;
+    const pos = scalePosition({ x, y });
+    ctx.fillStyle = color
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+
+    drawSurroundingCircles({ x: pos.x, y: pos.y, radius, smallRadius: radius / 3, count: 12, color });
+  }
+
+  const drawQuestStation = ({ x, y, radius = 10 }) => {
+    const pos = scalePosition({ x, y });
+    ctx.fillStyle = `rgba(103, 27, 255, 0.79)`;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  const drawSurroundingCircles = ({
+                                    x,
+                                    y,
+                                    radius,
+                                    smallRadius = radius / 3,
+                                    count = 12,
+                                    color = `rgba(255, 255, 255, 0.9)`
+                                  }) => {
+    const angleStep = (2 * Math.PI) / count;
+    ctx.fillStyle = color;
+    for (let i = 0; i < count; i++) {
+      const angle = i * angleStep;
+      const smallX = x + (radius + smallRadius) * Math.cos(angle);
+      const smallY = y + (radius + smallRadius) * Math.sin(angle);
+      ctx.beginPath();
+      ctx.arc(smallX, smallY, smallRadius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+  };
+
+  const drawTradeStation = ({ x, y, radius = 10 }) => {
+    const pos = scalePosition({ x, y });
+    ctx.fillStyle = `rgba(188, 143, 61, 0.94)`;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+  };
+
   const drawBar = ({ x, y, width, height, color = "white" }) => {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
@@ -141,6 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Status
+    drawText({ text: `Status: ${client.status}`, x: 10, y: 20 });
+
     // Name of the map
     drawText({ text: client.scene.currentMap, x: canvas.width / 2 - 50, y: canvas.height / 2, size: 50, opacity: 0.2 });
 
@@ -169,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         y: pos.y,
       })
 
-      pos.type === OBJECT_TYPES.QUEST_STATION && drawQuestStion({
+      pos.type === OBJECT_TYPES.QUEST_STATION && drawQuestStation({
         x: pos.x,
         y: pos.y,
       })
@@ -182,12 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
       y: pos.y,
       type: pos.type
     }));
-
-    // Player
-    const playerShip = Object.values(client.scene.ships).find((ship) => ship.id === playerId);
-    if (playerShip) {
-      drawPlayer({ x: playerShip.x, y: playerShip.y, cross: true });
-    }
 
     // NPCs
     Object.values(client.scene.ships).filter((ship) => ship.corporation === CORPORATIONS_TYPES.NONE).forEach(attrs => drawEnemy({
