@@ -128,6 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
       y: attrs.y,
     }));
 
+    // Player
+    const playerShip = Object.values(client.scene.ships).find((ship) => ship.id === playerId);
+    if (playerShip) {
+      drawPlayer({ x: playerShip.x, y: playerShip.y, cross: true });
+    }
+
     // Directional lines
     // drawDirectional({ x1: 100, y1: 100, x2: 725, y2: 510, })
 
