@@ -1,5 +1,25 @@
 const GameClient = require("../modules/GameClient.js");
 
+const CORPORATIONS_TYPES = {
+  NONE: 0,
+  U: 1,
+  E: 2,
+  R: 3,
+}
+
+const OBJECT_TYPES = {
+  NORMAL_TELEPORT: "NORMAL_TELEPORT",
+  SPACE_STATION: "SPACE_STATION",
+  TRADE_STATION: "TRADE_STATION",
+  QUEST_STATION: "QUEST_STATION",
+}
+
+const COLLECTABLE_TYPES = {
+  BONUS_BOX: 0,
+  CARGO_BOX: 1,
+  GREEN_BOX: 3,
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.querySelector("canvas");
   const ctx = canvas.getContext("2d");
@@ -80,6 +100,28 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillRect(x, y, width, height);
   }
 
+  const drawCollectable = ({ x, y, type, width = 3, height = 3 }) => {
+    let color;
+
+    switch (type) {
+      case COLLECTABLE_TYPES.BONUS_BOX:
+        color = "#ffdb00";
+        break;
+      case COLLECTABLE_TYPES.CARGO_BOX:
+        color = "#c58a59";
+        break;
+      case COLLECTABLE_TYPES.GREEN_BOX:
+        color = "#a4ffb4";
+        break;
+      default:
+        color = "white";
+    }
+
+    const pos = scalePosition({ x, y });
+    ctx.fillStyle = color;
+    ctx.fillRect(pos.x, pos.y, width, height);
+  }
+
   const client = new GameClient({
     username: "prueba123456",
     password: "prueba123456",
@@ -111,9 +153,34 @@ document.addEventListener("DOMContentLoaded", () => {
     drawText({ text: "210,000 / 210,000", x: 120, y: canvas.height - 8 });
 
     // Environment elements
-    Object.values(client.scene.currentMapObjects).forEach(pos => pos.type === "NORMAL_TELEPORT" && drawPortal({
+    Object.values(client.scene.currentMapObjects).forEach(pos => {
+      pos.type === OBJECT_TYPES.NORMAL_TELEPORT && drawPortal({
+        x: pos.x,
+        y: pos.y,
+      })
+
+      pos.type === OBJECT_TYPES.SPACE_STATION && drawSpaceStation({
+        x: pos.x,
+        y: pos.y,
+      })
+
+      pos.type === OBJECT_TYPES.TRADE_STATION && drawTradeStation({
+        x: pos.x,
+        y: pos.y,
+      })
+
+      pos.type === OBJECT_TYPES.QUEST_STATION && drawQuestStion({
+        x: pos.x,
+        y: pos.y,
+      })
+    });
+
+    // Collectables
+    // Environment elements
+    Object.values(client.scene.collectibles).forEach(pos => drawCollectable({
       x: pos.x,
       y: pos.y,
+      type: pos.type
     }));
 
     // Player
@@ -123,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // NPCs
-    Object.values(client.scene.ships).filter((ship) => ship.id !== playerId).forEach(attrs => drawEnemy({
+    Object.values(client.scene.ships).filter((ship) => ship.corporation === CORPORATIONS_TYPES.NONE).forEach(attrs => drawEnemy({
       x: attrs.x,
       y: attrs.y,
     }));
