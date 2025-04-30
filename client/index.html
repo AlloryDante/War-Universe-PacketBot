@@ -2,13 +2,12 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
-  <title>Hello from Electron renderer!</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'script-src-elem;">
+  <title>War Angel</title>
+  <link href="./styles/output.css" rel="stylesheet">
 </head>
-<body>
-<h1>Hello from Electron renderer!</h1>
-<p>👋</p>
-<p id="info"></p>
+<body style="background-color: black">
+<canvas></canvas>
 </body>
 <script src="./renderer.js"></script>
 </html>

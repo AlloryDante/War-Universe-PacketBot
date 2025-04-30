@@ -5,8 +5,10 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    resizable: false,
+    maximizable: false,
+    autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: false,
       nodeIntegration: true,
       allowRunningInsecureContent: true,
