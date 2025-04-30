@@ -1,4 +1,5 @@
 const GameClient = require("../modules/GameClient.js");
+const CONFIGURATION  = require('./config');
 
 const CORPORATIONS_TYPES = {
   NONE: 0,
@@ -86,15 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillText(text, x, y);
   }
 
-  const drawDirectional = ({ x1, y1, x2, y2 }) => {
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-  };
-
   const drawSpaceStation = ({ x, y, radius = 15 }) => {
     const color = `rgba(255, 255, 255, 0.5)`;
     const pos = scalePosition({ x, y });
@@ -150,11 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalWidth = 340;
     const filledWidth = (percentage / 100) * totalWidth;
 
-    // Draw background bar
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(x, y, totalWidth, height);
 
-    // Draw filled portion
     ctx.fillStyle = color;
     ctx.fillRect(x, y, filledWidth, height);
   };
@@ -186,6 +176,10 @@ document.addEventListener("DOMContentLoaded", () => {
     password: "prueba123456",
     serverId: "eu1",
   });
+
+  client.setSettings(CONFIGURATION);
+  client.setMode("killcollect");
+  client.start();
 
   const render = () => {
     if (!client.client.clientLoaded) return requestAnimationFrame(render);
@@ -278,20 +272,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // drawDirectional({ x1: 100, y1: 100, x2: 725, y2: 510, })
 
     // Stats
-    drawText({ text: "BTC:", x: 20, y: 250, })
-    drawText({ text: "0", x: 60, y: 250, })
+    drawText({ text: "BTC:", x: 10, y: 250, })
+    drawText({ text: client.user.credits, x: 50, y: 250, })
 
-    drawText({ text: "PLT:", x: 20, y: 265, })
-    drawText({ text: "0", x: 60, y: 265, })
+    drawText({ text: "PLT:", x: 10, y: 265, })
+    drawText({ text: client.user.plt, x: 50, y: 265, })
 
-    drawText({ text: "HNR:", x: 20, y: 280, })
-    drawText({ text: "0", x: 60, y: 280, })
+    drawText({ text: "HNR:", x: 10, y: 280, })
+    drawText({ text: client.user.honor, x: 50, y: 280, })
 
-    drawText({ text: "EXP:", x: 20, y: 295, })
-    drawText({ text: "0", x: 60, y: 295, })
+    drawText({ text: "EXP:", x: 10, y: 295, })
+    drawText({ text: client.user.experience, x: 50, y: 295, })
 
-    drawText({ text: "Deaths:", x: 20, y: 310, })
-    drawText({ text: client.stats.deaths, x: 60, y: 310, })
+    drawText({ text: "Deaths:", x: 10, y: 310, })
+    drawText({ text: client.stats.deaths, x: 50, y: 310, })
 
     console.log(client)
     requestAnimationFrame(render);
