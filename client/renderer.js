@@ -146,10 +146,18 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fill();
   };
 
-  const drawBar = ({ x, y, width, height, color = "white" }) => {
+  const drawBar = ({ x, y, percentage = 100, height, color = "white", backgroundColor = "gray" }) => {
+    const totalWidth = 340;
+    const filledWidth = (percentage / 100) * totalWidth;
+
+    // Draw background bar
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(x, y, totalWidth, height);
+
+    // Draw filled portion
     ctx.fillStyle = color;
-    ctx.fillRect(x, y, width, height);
-  }
+    ctx.fillRect(x, y, filledWidth, height);
+  };
 
   const drawCollectable = ({ x, y, type, width = 3, height = 3 }) => {
     let color;
@@ -181,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const render = () => {
     if (!client.client.clientLoaded) return requestAnimationFrame(render);
+    if (!client.scene.playerId) return requestAnimationFrame(render);
 
     currentMapWidth = client.scene.currentMapWidth || currentMapWidth;
     currentMapHeight = client.scene.currentMapHeight || currentMapHeight;
@@ -194,17 +203,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Status
     drawText({ text: `Status: ${client.status}`, x: 10, y: 20 });
+    drawText({ text: `Server: ${client.client.serverId.toUpperCase()}`, x: 10, y: 35 });
 
     // Name of the map
     drawText({ text: client.scene.currentMap, x: canvas.width / 2 - 50, y: canvas.height / 2, size: 50, opacity: 0.2 });
 
     // Static elements
-    drawBar({ x: 10, y: canvas.height - 40, width: 320, height: 15, color: "#1b5922" });
-    drawBar({ x: 10, y: canvas.height - 40, width: 290, height: 15, color: "lime" });
-    drawText({ text: "76,000 / 96,000", x: 120, y: canvas.height - 28 });
+    const player = client.scene.ships[playerId];
+    drawBar({
+      x: 10,
+      y: canvas.height - 35,
+      height: 12,
+      color: "green",
+      percentage: (player.health / player.maxHealth) * 100
+    });
+    drawBar({
+      x: 10, y: canvas.height - 20, height: 12, color: "blue",
+      percentage: (player.shield / player.maxShield) * 100
+    });
 
-    drawBar({ x: 10, y: canvas.height - 20, width: 320, height: 15, color: "aqua" });
-    drawText({ text: "210,000 / 210,000", x: 120, y: canvas.height - 8 });
+    drawText({ text: `${player.health} / ${player.maxHealth}`, x: 20, y: canvas.height - 25 });
+    drawText({ text: `${player.shield} / ${player.maxShield}`, x: 20, y: canvas.height - 10 });
 
     // Environment elements
     Object.values(client.scene.currentMapObjects).forEach(pos => {
@@ -260,16 +279,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Stats
     drawText({ text: "BTC:", x: 20, y: 250, })
-    drawText({ text: "0", x: 50, y: 250, })
+    drawText({ text: "0", x: 60, y: 250, })
 
     drawText({ text: "PLT:", x: 20, y: 265, })
-    drawText({ text: "0", x: 50, y: 265, })
+    drawText({ text: "0", x: 60, y: 265, })
 
     drawText({ text: "HNR:", x: 20, y: 280, })
-    drawText({ text: "0", x: 50, y: 280, })
+    drawText({ text: "0", x: 60, y: 280, })
 
     drawText({ text: "EXP:", x: 20, y: 295, })
-    drawText({ text: "0", x: 50, y: 295, })
+    drawText({ text: "0", x: 60, y: 295, })
+
+    drawText({ text: "Deaths:", x: 20, y: 310, })
+    drawText({ text: client.stats.deaths, x: 60, y: 310, })
 
     console.log(client)
     requestAnimationFrame(render);
