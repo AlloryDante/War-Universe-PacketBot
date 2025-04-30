@@ -230,24 +230,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Collectables
-    // Environment elements
     Object.values(client.scene.collectibles).forEach(pos => drawCollectable({
       x: pos.x,
       y: pos.y,
       type: pos.type
     }));
 
-    // NPCs
-    Object.values(client.scene.ships).filter((ship) => ship.corporation === CORPORATIONS_TYPES.NONE).forEach(attrs => drawEnemy({
-      x: attrs.x,
-      y: attrs.y,
-    }));
-
-    // Player
-    const playerShip = Object.values(client.scene.ships).find((ship) => ship.id === playerId);
-    if (playerShip) {
-      drawPlayer({ x: playerShip.x, y: playerShip.y, cross: true });
-    }
+    // Ships
+    const ownCorporation = Object.values(client.scene.ships).find((ship) => ship.id === playerId)?.corporation;
+    Object.values(client.scene.ships).forEach((ship) => {
+      if (ship.id === playerId) drawPlayer({ x: ship.x, y: ship.y, cross: true });
+      if (ship.corporation === CORPORATIONS_TYPES.NONE) drawEnemy({ x: ship.x, y: ship.y, });
+      if (ship.corporation === ownCorporation && ship.id !== playerId) drawPlayer({
+        x: ship.x,
+        y: ship.y,
+        color: "blue",
+      });
+      if (ship.corporation !== CORPORATIONS_TYPES.NONE && ship.corporation !== ownCorporation) drawPlayer({
+        x: ship.x,
+        y: ship.y,
+        color: "orange",
+        width: 10,
+        height: 10
+      });
+    });
 
     // Directional lines
     // drawDirectional({ x1: 100, y1: 100, x2: 725, y2: 510, })
@@ -264,8 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawText({ text: "EXP:", x: 20, y: 295, })
     drawText({ text: "0", x: 50, y: 295, })
-
-    drawEnemy({ x: 15000, y: 10000, color: "red", width: 5, height: 5 });
 
     console.log(client)
     requestAnimationFrame(render);
