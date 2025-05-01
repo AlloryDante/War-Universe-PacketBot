@@ -22,10 +22,162 @@ const COLLECTABLE_TYPES = {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Initialize the tabs
+  document.querySelectorAll("#tabs > div").forEach((tab, index) => {
+    if (index === 1) {
+      tab.classList.add("bg-zinc-950");
+      document.querySelector(`#${tab.id.split("-")[1]}`).classList.remove("hidden");
+    }
+    tab.addEventListener("click", () => {
+      console.log(`Clicked on ${tab.id}`);
+      document.querySelectorAll("#content > div").forEach(content => {
+        content.classList.add("hidden");
+      });
+      document.querySelector(`#${tab.id.split("-")[1]}`).classList.remove("hidden");
+
+      document.querySelectorAll("#tabs > div").forEach(tab => {
+        tab.classList.remove("bg-zinc-950");
+      });
+      tab.classList.add("bg-zinc-950");
+    });
+  });
+
+  // Initialize the NPC table
+  const npcList = document.querySelector("tbody#npcList");
+
+  const npcData =[
+    { name: "-=(Hydro)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Hydro)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Jenta)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Jenta)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Mali)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Mali)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Plarion)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Plarion)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Motron)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Motron)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Xeon)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Xeon)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Bangoliour)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Bangoliour)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Zavientos)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Magmius)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Magmius)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Raider)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Raider)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Vortex)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Hyper|Vortex)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+    { name: "-=(Quattroid)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
+  ];
+
+  npcData.forEach(npc => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+            <td class="mb-2">
+              <input
+                type="checkbox"
+                data-storage-key="npcTarget"
+                ${npc.farmNearPortal ? "checked" : ""}
+              />
+            </td>
+
+            <td class="px-2">
+              <input
+                type="text"
+                class="w-full disabled:bg-gray-600/50"
+                data-storage-key="npcName"
+                value="${npc.name}"
+                disabled
+              />
+            </td>
+
+            <td class="px-2">
+              <input
+                type="number"
+                data-storage-key="npcPriority"
+                placeholder="Priority"
+                min="1"
+                max="999"
+                value="${npc.priority}"
+              />
+            </td>
+
+            <td class="px-2">
+              <select
+                data-storage-key="npcAmmo"
+                value="${npc.ammo}"
+              >
+                <option value="1" ${npc.ammo === 1 ? "selected" : ""}>RLX_1</option>
+                <option value="2" ${npc.ammo === 2 ? "selected" : ""}>GLX_2</option>
+                <option value="3" ${npc.ammo === 3 ? "selected" : ""}>BLX_3</option>
+                <option value="4" ${npc.ammo === 4 ? "selected" : ""}>GLX_2_AS</option>
+                <option value="5" ${npc.ammo === 5 ? "selected" : ""}>MRS_6X</option>
+              </select>
+            </td>
+
+            <td class="px-2">
+              <select
+                data-storage-key="npcRocket"
+                value="${npc.rockets}"
+              >
+                <option value="1" ${npc.rockets === 1 ? "selected" : ""}>KEP_410</option>
+                <option value="2" ${npc.rockets === 2 ? "selected" : ""}>NC_30</option>
+                <option value="3" ${npc.rockets === 3 ? "selected" : ""}>TNC_130</option>
+              </select>
+            </td>
+  `;
+    npcList.appendChild(row);
+  });
+
+  // Initialize the collectable table
+  const collectableList = document.querySelector("tbody#collectableList");
+  const collectableData = [
+    { type: COLLECTABLE_TYPES.BONUS_BOX, name: "Bonus box", priority: 1 },
+    { type: COLLECTABLE_TYPES.CARGO_BOX, name: "Cargo box", priority: 1 },
+    { type: COLLECTABLE_TYPES.GREEN_BOX, name: "Green box", priority: 1 },
+  ];
+
+  collectableData.forEach(collectable => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+            <td class="mb-2">
+              <input
+                type="checkbox"
+                data-storage-key="collectableTarget"
+                ${collectable.priority ? "checked" : ""}
+              />
+            </td>
+
+            <td class="px-2">
+              <input
+                type="text"
+                class="w-full disabled:bg-gray-600/50"
+                data-storage-key="collectableType"
+                value="${collectable.name}"
+                disabled
+              />
+            </td>
+
+            <td class="px-2">
+              <input
+                type="number"
+                data-storage-key="collectablePriority"
+                placeholder="Priority"
+                min="1"
+                max="999"
+                value="${collectable.priority}"
+              />
+            </td>
+  `;
+    collectableList.appendChild(row);
+  });
+
+  // Game rendering
   const canvas = document.querySelector("canvas");
   const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = 800;
+  canvas.height = 600;
   canvas.classList.add("overflow-hidden");
 
   let currentMapWidth = 0;
@@ -197,11 +349,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawText({ text: client.stats.messageState, x: canvas.width / 2 - ctx.measureText(client.stats.messageState).width / 2, y: 10 });
 
-    // Status
+    // Status top left
     drawText({ text: `Status: ${client.status}`, x: 10, y: 20 });
     drawText({ text: `Server: ${client.client.serverId.toUpperCase()}`, x: 10, y: 35 });
 
-    // Name of the map
+    // Name of the map (Middle - screen)
     drawText({ text: client.scene.currentMap, x: canvas.width / 2 - 50, y: canvas.height / 2, size: 50, opacity: 0.2 });
 
     // Static elements
@@ -213,15 +365,15 @@ document.addEventListener("DOMContentLoaded", () => {
       y: canvas.height - 35,
       height: 12,
       color: "green",
-      percentage: (player.health / player.maxHealth) * 100
+      percentage: (player?.health / player?.maxHealth) * 100
     });
     drawBar({
       x: 10, y: canvas.height - 20, height: 12, color: "blue",
-      percentage: (player.shield / player.maxShield) * 100
+      percentage: (player?.shield / player?.maxShield) * 100
     });
 
-    drawText({ text: `${player.health} / ${player.maxHealth}`, x: 20, y: canvas.height - 25 });
-    drawText({ text: `${player.shield} / ${player.maxShield}`, x: 20, y: canvas.height - 10 });
+    drawText({ text: `${player?.health} / ${player?.maxHealth}`, x: 20, y: canvas.height - 25 });
+    drawText({ text: `${player?.shield} / ${player?.maxShield}`, x: 20, y: canvas.height - 10 });
 
     if (selected) {
       const npc = client.scene.ships[selected];

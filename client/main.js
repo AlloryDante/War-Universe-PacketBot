@@ -3,15 +3,18 @@ const path = require('node:path')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 825,
+    height: 675,
     resizable: false,
     maximizable: false,
     autoHideMenuBar: true,
+    darkTheme: true,
+    disableHtmlFullscreenWindowResize: true,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
       allowRunningInsecureContent: true,
+      preload: path.join(__dirname, 'renderer.js'),
     }
   })
 
