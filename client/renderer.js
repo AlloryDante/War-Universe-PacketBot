@@ -81,8 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.stroke();
   };
 
-  const drawText = ({ text, x, y, size = 11, opacity = 1 }) => {
-    ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+  const drawText = ({ text, x, y, size = 11, opacity = 1, color }) => {
+    color ? ctx.fillStyle = color : ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
     ctx.font = `${size}px Arial`;
     ctx.fillText(text, x, y);
   }
@@ -195,6 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawText({ text: client.stats.messageState, x: canvas.width / 2 - ctx.measureText(client.stats.messageState).width / 2, y: 10 });
+
     // Status
     drawText({ text: `Status: ${client.status}`, x: 10, y: 20 });
     drawText({ text: `Server: ${client.client.serverId.toUpperCase()}`, x: 10, y: 35 });
@@ -204,6 +206,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Static elements
     const player = client.scene.ships[playerId];
+    const selected = player?.selected;
+
     drawBar({
       x: 10,
       y: canvas.height - 35,
@@ -218,6 +222,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawText({ text: `${player.health} / ${player.maxHealth}`, x: 20, y: canvas.height - 25 });
     drawText({ text: `${player.shield} / ${player.maxShield}`, x: 20, y: canvas.height - 10 });
+
+    if (selected) {
+      const npc = client.scene.ships[selected];
+      if (npc) {
+        const barX = 435;
+        const barY = canvas.height - 35;
+        const textX = 445;
+
+        drawBar({ x: barX, y: barY, height: 12, color: "green", percentage: (npc.health / npc.maxHealth) * 100 });
+        drawBar({ x: barX, y: barY + 15, height: 12, color: "blue", percentage: (npc.shield / npc.maxShield) * 100 });
+
+        drawText({ text: `${npc.health} / ${npc.maxHealth}`, x: textX, y: barY + 10 });
+        drawText({ text: `${npc.shield} / ${npc.maxShield}`, x: textX, y: barY + 25 });
+
+        drawText({
+          text: npc.name,
+          x: 580 - ctx.measureText(npc.name).width / 2,
+          y: canvas.height - 45,
+          color: "red",
+          size: 18,
+        });
+      }
+    }
 
     // Environment elements
     Object.values(client.scene.currentMapObjects).forEach(pos => {
@@ -291,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(render);
   }
 
+  addEventListener("storage", (event) => console.log(event));
   render();
 });
 
