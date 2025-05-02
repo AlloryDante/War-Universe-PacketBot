@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self';" />
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self';"/>
   <title>War Angel</title>
-  <link href="./styles/output.css" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="./styles/output.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="./renderer.js" defer></script>
 </head>
 <body class="flex flex-col h-screen min-h-screen select-none">
@@ -43,6 +43,19 @@
       />
     </svg>
   </div>
+
+  <div
+    id="pause"
+    class="px-2 flex items-center justify-center hover:text-white hover:cursor-pointer"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path
+        fill-rule="evenodd"
+        d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </div>
 </div>
 
 <!--tabs content-->
@@ -62,21 +75,22 @@
         <div class="flex items-center gap-1">
           <label for="mode">Mode:</label>
           <select id="mode" data-storage-key="mode">
-            <option value="BOX">BOX</option>
-            <option value="NPC">NPC</option>
-            <option value="BOX+NPC">BOX + NPC</option>
+            <option value="collect">BOX</option>
+            <option value="kill">NPC</option>
+            <option value="killcollect">BOX + NPC</option>
+            <option value="follow" disabled>FOLLOW</option>
           </select>
         </div>
 
         <!-- MIN HP -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="minHP">Limit deaths:</label>
+          <label for="minHP">Minimum health:</label>
           <input
             id="minHP"
             type="number"
             data-storage-key="minHP"
             min="1"
-            max="999"
+            max="100"
           />
         </div>
 
@@ -226,7 +240,8 @@
               class="w-fit"
               data-storage-key="targetEngagedNPC"
             />
-            <label for="targetEngagedNPC" class="w-full"
+            <label
+              for="targetEngagedNPC" class="w-full"
             >Target engaged NPC</label
             >
           </div>
@@ -396,7 +411,7 @@
         <!-- MIN HP -->
         <div class="flex items-center gap-1 mt-1">
           <label for="username">Username:</label>
-          <input id="username" type="text" data-storage-key="username" />
+          <input id="username" type="text" data-storage-key="username"/>
         </div>
 
         <!-- MIN HP -->

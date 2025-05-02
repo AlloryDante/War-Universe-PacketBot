@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
               farmNearPortal: false
             };
           }),
-
       ],
       collectBoxTypes: [
         ...Object.keys(localStorage)
@@ -285,6 +284,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#play").addEventListener("click", () => {
     client.setSettings(adapterSettings());
     client.start();
+  })
+
+  document.querySelector("#pause").addEventListener("click", () => {
+    client.stop();
   })
 
   // Game rendering
