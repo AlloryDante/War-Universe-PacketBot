@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize the tabs
   document.querySelectorAll("#tabs > div").forEach((tab, index) => {
-    if (index === 1) {
+    if (index === 0) {
       tab.classList.add("bg-zinc-950");
       document.querySelector(`#${tab.id.split("-")[1]}`).classList.remove("hidden");
     }
@@ -283,6 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector("#play").addEventListener("click", () => {
     client.setSettings(adapterSettings());
+    client.setMode(JSON.parse(localStorage.getItem("mode")) || "collect");
     client.start();
   })
 
