@@ -419,6 +419,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillRect(x, y, filledWidth, height);
   };
 
+  const drawLine = ({ x1, y1, x2, y2, color = "white", width = 1 }) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
   const drawCollectable = ({ x, y, type, width = 3, height = 3 }) => {
     let color;
 
@@ -550,24 +559,53 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ships
     const ownCorporation = Object.values(client.scene.ships).find((ship) => ship.id === playerId)?.corporation;
     Object.values(client.scene.ships).forEach((ship) => {
-      if (ship.id === playerId) drawPlayer({ x: ship.x, y: ship.y, cross: true });
-      if (ship.corporation === CORPORATIONS_TYPES.NONE) drawEnemy({ x: ship.x, y: ship.y, });
-      if (ship.corporation === ownCorporation && ship.id !== playerId) drawPlayer({
-        x: ship.x,
-        y: ship.y,
-        color: "blue",
-      });
-      if (ship.corporation !== CORPORATIONS_TYPES.NONE && ship.corporation !== ownCorporation) drawPlayer({
-        x: ship.x,
-        y: ship.y,
-        color: "orange",
-        width: 10,
-        height: 10
-      });
+      const pos = scalePosition({ x: ship.x, y: ship.y });
+
+      if (ship.id === playerId) {
+        drawPlayer({ x: ship.x, y: ship.y, cross: true });
+        drawText({
+          x: 120,
+          y: 555,
+          text: ship.name,
+          color: "white",
+          size: 18
+        })
+      } else if (ship.corporation === ownCorporation) {
+        drawPlayer({ x: ship.x, y: ship.y, color: "blue" });
+        drawText({
+          text: ship.name,
+          x: pos.x - ctx.measureText(ship.name).width / 2,
+          y: pos.y - 10,
+          color: "blue",
+          size: 10
+        });
+      } else if (ship.corporation === CORPORATIONS_TYPES.NONE) {
+        drawEnemy({ x: ship.x, y: ship.y });
+        drawText({
+          text: ship.name,
+          x: pos.x - ctx.measureText(ship.name).width / 2,
+          y: pos.y - 10,
+          color: "red",
+          size: 8
+        });
+      } else {
+        drawPlayer({ x: ship.x, y: ship.y, color: "orange", width: 10, height: 10 });
+        drawText({
+          text: ship.name,
+          x: pos.x - ctx.measureText(ship.name).width / 2,
+          y: pos.y - 10,
+          color: "orange",
+          size: 10
+        });
+      }
     });
 
-    // Directional lines
-    // drawDirectional({ x1: 100, y1: 100, x2: 725, y2: 510, })
+    // Path line
+    if (client.scene?.isMoving) {
+      const posPlayer = scalePosition({ x: player.x, y: player.y });
+      const posFinal = scalePosition({ x: client.scene.targetx, y: client.scene.targety });
+      drawLine({ x1: posPlayer.x + 4, y1: posPlayer.y + 4, x2: posFinal.x + 4, y2: posFinal.y + 4, color: "rgba(255,255,255,0.68)", width: 1 });
+    }
 
     // Stats
     drawText({ text: "BTC:", x: 10, y: 250, })
