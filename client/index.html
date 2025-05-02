@@ -6,6 +6,7 @@
   <title>War Angel</title>
   <link href="./styles/output.css" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="./renderer.js" defer></script>
 </head>
 <body class="flex flex-col h-screen min-h-screen select-none">
 <!--  tabs-->
@@ -26,6 +27,7 @@
   </div>
 
   <div
+    id="play"
     class="px-2 flex items-center justify-center hover:text-white hover:cursor-pointer"
   >
     <svg
@@ -66,6 +68,18 @@
           </select>
         </div>
 
+        <!-- MIN HP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="minHP">Limit deaths:</label>
+          <input
+            id="minHP"
+            type="number"
+            data-storage-key="minHP"
+            min="1"
+            max="999"
+          />
+        </div>
+
         <!-- MAP -->
         <div class="flex items-center gap-1 mt-1">
           <label for="workMap">Work map:</label>
@@ -97,19 +111,6 @@
           </select>
         </div>
 
-        <!-- MIN HP -->
-        <div class="flex items-center gap-1 mt-1">
-          <label for="minHP">Limit deaths:</label>
-          <input
-            id="minHP"
-            type="number"
-            data-storage-key="minHP"
-            min="1"
-            max="999"
-            value="15"
-          />
-        </div>
-
         <!-- ADVICE HP -->
         <div class="flex items-center gap-1 mt-1">
           <label for="adviceHP">Advice HP:</label>
@@ -119,7 +120,6 @@
             data-storage-key="adviceHP"
             min="1"
             max="999"
-            value="70"
           />
         </div>
 
@@ -138,14 +138,13 @@
 
         <!-- ADMIN DELAY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="adminDelay">Admin delay:</label>
+          <label for="adminDelay">Admin delay (min):</label>
           <input
             id="adminDelay"
             type="number"
             data-storage-key="admin"
             min="1"
             max="999"
-            value="70"
           />
         </div>
 
@@ -164,14 +163,13 @@
 
         <!-- SCAPE DELAY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="scapeDelay">Scape delay:</label>
+          <label for="scapeDelay">Scape delay (ms):</label>
           <input
             id="scapeDelay"
             type="number"
             data-storage-key="scapeDelay"
             min="1"
             max="999"
-            value="70"
           />
         </div>
 
@@ -184,7 +182,6 @@
             data-storage-key="attackConfig"
             min="1"
             max="2"
-            value="1"
           />
         </div>
 
@@ -197,7 +194,6 @@
             data-storage-key="fleeConfig"
             min="1"
             max="2"
-            value="1"
           />
         </div>
 
@@ -210,7 +206,6 @@
             data-storage-key="flyingConfig"
             min="1"
             max="2"
-            value="1"
           />
         </div>
       </div>
@@ -291,52 +286,52 @@
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="RLX_1" class="w-full">RLX_1</label>
+          <label for="autoBuy>RLX_1" class="w-full">RLX_1</label>
           <div class="w-full">
             <input
-              id="RLX_1"
+              id="autoBuy>RLX_1"
               type="checkbox"
               class="w-fit"
-              data-storage-key="RLX_1"
+              data-storage-key="autoBuy>RLX_1"
             />
           </div>
         </div>
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="GLX_2" class="w-full">GLX_2</label>
+          <label for="autoBuy>GLX_2" class="w-full">GLX_2</label>
           <div class="w-full">
             <input
-              id="GLX_2"
+              id="autoBuy>GLX_2"
               type="checkbox"
               class="w-fit"
-              data-storage-key="GLX_2"
+              data-storage-key="autoBuy>GLX_2"
             />
           </div>
         </div>
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="BLX_3" class="w-full">BLX_3</label>
+          <label for="autoBuy>BLX_3" class="w-full">BLX_3</label>
           <div class="w-full">
             <input
-              id="BLX_3"
+              id="autoBuy>BLX_3"
               type="checkbox"
               class="w-fit"
-              data-storage-key="BLX_3"
+              data-storage-key="autoBuy>BLX_3"
             />
           </div>
         </div>
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="GLX_2_AS" class="w-full">GLX_2_AS</label>
+          <label for="autoBuy>GLX_2_AS" class="w-full">GLX_2_AS</label>
           <div class="w-full">
             <input
-              id="GLX_2_AS"
+              id="autoBuy>GLX_2_AS"
               type="checkbox"
               class="w-fit"
-              data-storage-key="GLX_2_AS"
+              data-storage-key="autoBuy>GLX_2_AS"
             />
           </div>
         </div>
@@ -351,46 +346,46 @@
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="KEP_410" class="w-full">KEP_410</label>
+          <label for="autoBuy>KEP_410" class="w-full">KEP_410</label>
           <div class="w-full">
             <input
-              id="KEP_410"
+              id="autoBuy>KEP_410"
               type="checkbox"
               class="w-fit"
-              data-storage-key="KEP_410"
+              data-storage-key="autoBuy>KEP_410"
             />
           </div>
         </div>
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="NC_30" class="w-full">NC_30</label>
+          <label for="autoBuy>NC_30" class="w-full">NC_30</label>
           <div class="w-full">
             <input
-              id="NC_30"
+              id="autoBuy>NC_30"
               type="checkbox"
               class="w-fit"
-              data-storage-key="NC_30"
+              data-storage-key="autoBuy>NC_30"
             />
           </div>
         </div>
 
         <!-- AUTO BUY -->
         <div class="flex items-center gap-1 mt-1">
-          <label for="TNC_130" class="w-full">TNC_130</label>
+          <label for="autoBuy>TNC_130" class="w-full">TNC_130</label>
           <div class="w-full">
             <input
-              id="TNC_130"
+              id="autoBuy>TNC_130"
               type="checkbox"
               class="w-fit"
-              data-storage-key="TNC_130"
+              data-storage-key="autoBuy>TNC_130"
             />
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Group Auto buy-->
+    <!-- Group login -->
     <div id="group-account">
       <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
         WU - Account
@@ -421,7 +416,7 @@
             <option value="eu1">EU1</option>
             <option value="na1">NA1</option>
             <option value="tr1">TR1</option>
-            <option value="test">Test</option>
+            <option value="test1">Test</option>
           </select>
         </div>
       </div>
