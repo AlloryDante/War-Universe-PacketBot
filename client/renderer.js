@@ -1,5 +1,4 @@
 const GameClient = require("../modules/GameClient.js");
-const CONFIGURATION  = require('./config');
 
 const CORPORATIONS_TYPES = {
   NONE: 0,
@@ -21,7 +20,123 @@ const COLLECTABLE_TYPES = {
   GREEN_BOX: 3,
 }
 
+const NPC_TYPES = [
+  "-=(Hydro)=-",
+  "-=(Hyper|Hydro)=-",
+  "-=(Jenta)=-",
+  "-=(Hyper|Jenta)=-",
+  "-=(Mali)=-",
+  "-=(Hyper|Mali)=-",
+  "-=(Plarion)=-",
+  "-=(Hyper|Plarion)=-",
+  "-=(Motron)=-",
+  "-=(Hyper|Motron)=-",
+  "-=(Xeon)=-",
+  "-=(Hyper|Xeon)=-",
+  "-=(Bangoliour)=-",
+  "-=(Hyper|Bangoliour)=-",
+  "-=(Zavientos)=-",
+  "-=(Magmius)=-",
+  "-=(Hyper|Magmius)=-",
+  "-=(Raider)=-",
+  "-=(Hyper|Raider)=-",
+  "-=(Vortex)=-",
+  "-=(Hyper|Vortex)=-",
+  "-=(Quattroid)=-",
+];
+
+const COLLECTABLE_DATA_TABLE = [
+  { type: COLLECTABLE_TYPES.BONUS_BOX, name: "Bonus box", storageKey: `collectable-${COLLECTABLE_TYPES.BONUS_BOX}` },
+  { type: COLLECTABLE_TYPES.CARGO_BOX, name: "Cargo box", storageKey: `collectable-${COLLECTABLE_TYPES.CARGO_BOX}` },
+  { type: COLLECTABLE_TYPES.GREEN_BOX, name: "Green box", storageKey: `collectable-${COLLECTABLE_TYPES.GREEN_BOX}` },
+];
+
+const KILLABLE_DATA_TABLE = NPC_TYPES.map(name => ({
+  name,
+  storageKey: `killable-${name}`
+}));
+
+let client;
+
 document.addEventListener("DOMContentLoaded", () => {
+  const adapterSettings = () => {
+    return {
+      workMap: JSON.parse(localStorage.getItem("workMap")) || "U-1",
+      killTargets: [
+        ...Object.keys(localStorage)
+          .filter(key => key.startsWith("target>killable-"))
+          .map(key => {
+            const name = key.replace("target>killable-", "");
+            return {
+              name,
+              priority: JSON.parse(localStorage.getItem(`priority>killable-${name}`)) || 1,
+              ammo: JSON.parse(localStorage.getItem(`ammo>killable-${name}`)) || 1,
+              rockets: JSON.parse(localStorage.getItem(`rocket>killable-${name}`)) || 1,
+              farmNearPortal: false
+            };
+          }),
+
+      ],
+      collectBoxTypes: [
+        ...Object.keys(localStorage)
+          .filter(key => key.startsWith("target>collectable-"))
+          .map(key => {
+            const type = parseInt(key.replace("target>collectable-", ""), 10);
+            return {
+              type,
+              priority: localStorage.getItem(`priority>collectable-${type}`) ? Number(JSON.parse(localStorage.getItem(`priority>collectable-${type}`))) : 1
+            };
+          }),
+      ],
+      minHP: JSON.parse(localStorage.getItem("minHP")) || 10,
+      adviceHP: JSON.parse(localStorage.getItem("adviceHP")) || 70,
+      kill: {
+        targetEngagedNPC: JSON.parse(localStorage.getItem("targetEngagedNPC")) || false,
+      },
+      admin: {
+        enabled: JSON.parse(localStorage.getItem("detectAdmin")) || false,
+        delay: JSON.parse(localStorage.getItem("adminDelay")) || 5,
+      },
+      escape: {
+        enabled: JSON.parse(localStorage.getItem("escape")) || false,
+        delay: JSON.parse(localStorage.getItem("escapeDelay")) || 20000,
+      },
+      config: {
+        switchConfigOnShieldsDown: JSON.parse(localStorage.getItem("switchConfigOnShieldsDown")) || false,
+        attacking: JSON.parse(localStorage.getItem("attacking")) || 1,
+        fleeing: JSON.parse(localStorage.getItem("fleeing")) || 2,
+        flying: JSON.parse(localStorage.getItem("flying")) || 2,
+      },
+      enrichment: {
+        lasers: { enabled: false, materialType: 0 },
+        rockets: { enabled: false, materialType: 0 },
+        shields: { enabled: false, materialType: 0 },
+        speed: { enabled: false, materialType: 0 },
+      },
+      autobuy: {
+        laser: {
+          RLX_1: JSON.parse(localStorage.getItem("autoBuy>RLX_1")) || false,
+          GLX_2: JSON.parse(localStorage.getItem("autoBuy>GLX_2")) || false,
+          BLX_3: JSON.parse(localStorage.getItem("autoBuy>BLX_3")) || false,
+          GLX_2_AS: JSON.parse(localStorage.getItem("autoBuy>GLX_2_AS")) || false,
+          MRS_6X: false,
+        },
+        rockets: {
+          KEP_410: JSON.parse(localStorage.getItem("autoBuy>KEP_410")) || false,
+          NC_30: JSON.parse(localStorage.getItem("autoBuy>NC_30")) || false,
+          TNC_130: JSON.parse(localStorage.getItem("autoBuy>TNC_130")) || false,
+        },
+        key: {
+          enabled: false,
+          savePLT: 50000,
+        },
+      },
+      break: {
+        interval: 0,
+        duration: 0,
+      }
+    }
+  }
 
   // Initialize the tabs
   document.querySelectorAll("#tabs > div").forEach((tab, index) => {
@@ -30,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector(`#${tab.id.split("-")[1]}`).classList.remove("hidden");
     }
     tab.addEventListener("click", () => {
-      console.log(`Clicked on ${tab.id}`);
       document.querySelectorAll("#content > div").forEach(content => {
         content.classList.add("hidden");
       });
@@ -46,39 +160,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize the NPC table
   const npcList = document.querySelector("tbody#npcList");
 
-  const npcData =[
-    { name: "-=(Hydro)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Hydro)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Jenta)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Jenta)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Mali)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Mali)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Plarion)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Plarion)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Motron)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Motron)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Xeon)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Xeon)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Bangoliour)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Bangoliour)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Zavientos)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Magmius)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Magmius)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Raider)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Raider)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Vortex)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Hyper|Vortex)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-    { name: "-=(Quattroid)=-", priority: 1, ammo: 1, rockets: 1, farmNearPortal: false },
-  ];
-
-  npcData.forEach(npc => {
+  KILLABLE_DATA_TABLE.forEach(npc => {
     const row = document.createElement("tr");
-    row.innerHTML = `
-            <td class="mb-2">
+    row.innerHTML = `<td class="mb-2">
               <input
                 type="checkbox"
-                data-storage-key="npcTarget"
-                ${npc.farmNearPortal ? "checked" : ""}
+                data-storage-key="target>${npc.storageKey}"
               />
             </td>
 
@@ -86,27 +173,25 @@ document.addEventListener("DOMContentLoaded", () => {
               <input
                 type="text"
                 class="w-full disabled:bg-gray-600/50"
-                data-storage-key="npcName"
-                value="${npc.name}"
                 disabled
+                data-storage-key="name>${npc.storageKey}"
+                value="${npc.name}"
               />
             </td>
 
             <td class="px-2">
               <input
                 type="number"
-                data-storage-key="npcPriority"
+                data-storage-key="priority>${npc.storageKey}"
                 placeholder="Priority"
                 min="1"
                 max="999"
-                value="${npc.priority}"
               />
             </td>
 
             <td class="px-2">
               <select
-                data-storage-key="npcAmmo"
-                value="${npc.ammo}"
+                data-storage-key="ammo>${npc.storageKey}"
               >
                 <option value="1" ${npc.ammo === 1 ? "selected" : ""}>RLX_1</option>
                 <option value="2" ${npc.ammo === 2 ? "selected" : ""}>GLX_2</option>
@@ -118,34 +203,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <td class="px-2">
               <select
-                data-storage-key="npcRocket"
-                value="${npc.rockets}"
+                data-storage-key="rocket>${npc.storageKey}"
               >
                 <option value="1" ${npc.rockets === 1 ? "selected" : ""}>KEP_410</option>
                 <option value="2" ${npc.rockets === 2 ? "selected" : ""}>NC_30</option>
                 <option value="3" ${npc.rockets === 3 ? "selected" : ""}>TNC_130</option>
               </select>
-            </td>
-  `;
+            </td>`;
     npcList.appendChild(row);
   });
 
   // Initialize the collectable table
   const collectableList = document.querySelector("tbody#collectableList");
-  const collectableData = [
-    { type: COLLECTABLE_TYPES.BONUS_BOX, name: "Bonus box", priority: 1 },
-    { type: COLLECTABLE_TYPES.CARGO_BOX, name: "Cargo box", priority: 1 },
-    { type: COLLECTABLE_TYPES.GREEN_BOX, name: "Green box", priority: 1 },
-  ];
 
-  collectableData.forEach(collectable => {
+  COLLECTABLE_DATA_TABLE.forEach(collectable => {
     const row = document.createElement("tr");
     row.innerHTML = `
             <td class="mb-2">
               <input
                 type="checkbox"
-                data-storage-key="collectableTarget"
-                ${collectable.priority ? "checked" : ""}
+                data-storage-key="target>${collectable.storageKey}"
               />
             </td>
 
@@ -153,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <input
                 type="text"
                 class="w-full disabled:bg-gray-600/50"
-                data-storage-key="collectableType"
                 value="${collectable.name}"
                 disabled
               />
@@ -162,16 +238,54 @@ document.addEventListener("DOMContentLoaded", () => {
             <td class="px-2">
               <input
                 type="number"
-                data-storage-key="collectablePriority"
+                data-storage-key="priority>${collectable.storageKey}"
                 placeholder="Priority"
                 min="1"
                 max="999"
-                value="${collectable.priority}"
               />
             </td>
   `;
     collectableList.appendChild(row);
   });
+
+  document.querySelectorAll('input[data-storage-key], select[data-storage-key]').forEach(input => {
+    input.addEventListener('change', (event) => {
+      const key = event.target.getAttribute('data-storage-key');
+      const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+      saveToStorage(key, value);
+      client.setMode(JSON.parse(localStorage.getItem("mode")) || "collect");
+      client.setSettings(adapterSettings());
+    });
+  });
+
+  function loadFromStorage() {
+    const elements = document.querySelectorAll('[data-storage-key]');
+    elements.forEach(element => {
+      const key = element.getAttribute('data-storage-key');
+      const savedValue = localStorage.getItem(key);
+
+      if (savedValue !== null) {
+        const parsedValue = JSON.parse(savedValue);
+
+        if (element.type === 'checkbox') {
+          element.checked = parsedValue;
+        } else if (element.tagName === 'SELECT' || element.tagName === 'INPUT') {
+          element.value = parsedValue;
+        }
+      }
+    });
+  }
+
+  loadFromStorage();
+
+  function saveToStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  document.querySelector("#play").addEventListener("click", () => {
+    client.setSettings(adapterSettings());
+    client.start();
+  })
 
   // Game rendering
   const canvas = document.querySelector("canvas");
@@ -323,15 +437,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillRect(pos.x, pos.y, width, height);
   }
 
-  const client = new GameClient({
-    username: "prueba123456",
-    password: "prueba123456",
-    serverId: "eu1",
+  client = new GameClient({
+    username: JSON.parse(localStorage.getItem("username")) || "",
+    password: JSON.parse(localStorage.getItem("password")) || "",
+    serverId: JSON.parse(localStorage.getItem("server")) || "eu1",
   });
 
-  client.setSettings(CONFIGURATION);
-  client.setMode("killcollect");
-  client.start();
 
   const render = () => {
     if (!client.client.clientLoaded) return requestAnimationFrame(render);
@@ -347,7 +458,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawText({ text: client.stats.messageState, x: canvas.width / 2 - ctx.measureText(client.stats.messageState).width / 2, y: 10 });
+    drawText({
+      text: client.stats.messageState,
+      x: canvas.width / 2 - ctx.measureText(client.stats.messageState).width / 2,
+      y: 10
+    });
 
     // Status top left
     drawText({ text: `Status: ${client.status}`, x: 10, y: 20 });
@@ -466,11 +581,9 @@ document.addEventListener("DOMContentLoaded", () => {
     drawText({ text: "Deaths:", x: 10, y: 310, })
     drawText({ text: client.stats.deaths, x: 50, y: 310, })
 
-    console.log(client)
     requestAnimationFrame(render);
   }
 
-  addEventListener("storage", (event) => console.log(event));
   render();
 });
 

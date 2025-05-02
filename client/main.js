@@ -14,7 +14,6 @@ const createWindow = () => {
       contextIsolation: false,
       nodeIntegration: true,
       allowRunningInsecureContent: true,
-      preload: path.join(__dirname, 'renderer.js'),
     }
   })
 
