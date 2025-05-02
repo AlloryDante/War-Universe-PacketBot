@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self';"/>
+  <title>War Angel</title>
+  <link href="./styles/output.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="./renderer.js" defer></script>
+</head>
+<body class="flex flex-col h-screen min-h-screen select-none">
+<!--  tabs-->
+<div class="flex justify-start w-full bg-zinc-900 font-semibold">
+  <div id="tabs" class="grow flex">
+    <div
+      id="tab-map"
+      class="transition duration-300 py-1 hover:cursor-pointer flex-1 text-center"
+    >
+      Map
+    </div>
+    <div
+      id="tab-settings"
+      class="transition duration-300 py-1 hover:cursor-pointer flex-1 text-center"
+    >
+      Settings
+    </div>
+  </div>
+
+  <div
+    id="play"
+    class="px-2 flex items-center justify-center hover:text-white hover:cursor-pointer"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      class="size-5"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </div>
+
+  <div
+    id="pause"
+    class="px-2 flex items-center justify-center hover:text-white hover:cursor-pointer"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path
+        fill-rule="evenodd"
+        d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  </div>
+</div>
+
+<!--tabs content-->
+<div id="content" class="flex-1 relative">
+  <div id="map" class="hidden">
+    <canvas width="800" height="600" class="mx-auto"></canvas>
+  </div>
+  <div id="settings" class="hidden p-5 space-y-4">
+    <div id="group-general">
+      <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
+        General
+      </div>
+      <div
+        class="grid grid-cols-2 gap-4 border border-zinc-800 p-5 bg-zinc-900/20"
+      >
+        <!-- MODE -->
+        <div class="flex items-center gap-1">
+          <label for="mode">Mode:</label>
+          <select id="mode" data-storage-key="mode">
+            <option value="collect">BOX</option>
+            <option value="kill">NPC</option>
+            <option value="killcollect">BOX + NPC</option>
+            <option value="follow" disabled>FOLLOW</option>
+          </select>
+        </div>
+
+        <!-- MIN HP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="minHP">Minimum health:</label>
+          <input
+            id="minHP"
+            type="number"
+            data-storage-key="minHP"
+            min="1"
+            max="100"
+          />
+        </div>
+
+        <!-- MAP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="workMap">Work map:</label>
+          <select id="workMap" data-storage-key="workMap">
+            <option disabled>VEGA</option>
+            <option value="U-1">U-1</option>
+            <option value="U-2">U-2</option>
+            <option value="U-3">U-3</option>
+            <option value="U-5">U-5</option>
+            <option value="U-6">U-6</option>
+            <option value="U-7">U-7</option>
+            <option value="JVS">JVS</option>
+            <option disabled>ORION</option>
+            <option value="E-1">E-1</option>
+            <option value="E-2">E-2</option>
+            <option value="E-3">E-3</option>
+            <option value="E-5">E-5</option>
+            <option value="E-6">E-6</option>
+            <option value="E-7">E-7</option>
+            <option value="JVO">JVO</option>
+            <option disabled>SOLAR</option>
+            <option value="R-1">R-1</option>
+            <option value="R-2">R-2</option>
+            <option value="R-3">R-3</option>
+            <option value="R-5">R-5</option>
+            <option value="R-6">R-6</option>
+            <option value="R-7">R-7</option>
+            <option value="JSO">JSO</option>
+          </select>
+        </div>
+
+        <!-- ADVICE HP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="adviceHP">Advice health:</label>
+          <input
+            id="adviceHP"
+            type="number"
+            data-storage-key="adviceHP"
+            min="1"
+            max="999"
+          />
+        </div>
+
+        <!-- DETECT ADMIN -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="detectAdmin" class="w-full">Detect admin</label>
+          <div class="w-full">
+            <input
+              id="detectAdmin"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="detectAdmin"
+            />
+          </div>
+        </div>
+
+        <!-- ADMIN DELAY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="adminDelay">Admin delay (min):</label>
+          <input
+            id="adminDelay"
+            type="number"
+            data-storage-key="admin"
+            min="1"
+            max="999"
+          />
+        </div>
+
+        <!-- SCAPE  -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="scape" class="w-full">Scape:</label>
+          <div class="w-full">
+            <input
+              id="scape"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="scape"
+            />
+          </div>
+        </div>
+
+        <!-- SCAPE DELAY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="scapeDelay">Scape delay (ms):</label>
+          <input
+            id="scapeDelay"
+            type="number"
+            data-storage-key="scapeDelay"
+            min="1"
+            max="999"
+          />
+        </div>
+
+        <!-- ATTACK CONFIG -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="attackConfig">Attack config:</label>
+          <input
+            id="attackConfig"
+            type="number"
+            data-storage-key="attackConfig"
+            min="1"
+            max="2"
+          />
+        </div>
+
+        <!-- FLEE CONFIG -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="fleeConfig">Flee config:</label>
+          <input
+            id="fleeConfig"
+            type="number"
+            data-storage-key="fleeConfig"
+            min="1"
+            max="2"
+          />
+        </div>
+
+        <!-- FLYING CONFIG -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="flyingConfig">Flying config:</label>
+          <input
+            id="flyingConfig"
+            type="number"
+            data-storage-key="flyingConfig"
+            min="1"
+            max="2"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Group NPC-->
+    <div id="group-npc">
+      <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
+        NPC killer
+      </div>
+      <div class="border border-zinc-800 p-5 bg-zinc-900/20 space-y-4">
+        <!-- TARGET ENGAGED NPC -->
+        <div class="flex items-center gap-1 mt-1">
+          <div class="w-full">
+            <input
+              id="targetEngagedNPC"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="targetEngagedNPC"
+            />
+            <label
+              for="targetEngagedNPC" class="w-full"
+            >Target engaged NPC</label
+            >
+          </div>
+        </div>
+
+        <!-- TARGET NPC -->
+        <table class="w-full">
+          <thead>
+          <tr>
+            <th class="text-center">Target</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Priority</th>
+            <th class="text-center">Ammo</th>
+            <th class="text-center">Rocket</th>
+          </tr>
+          </thead>
+          <tbody id="npcList">
+          <!-- NPC rows will be added here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Group BOX-->
+    <div id="group-collectable">
+      <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
+        Box collector
+      </div>
+      <div class="border border-zinc-800 p-5 bg-zinc-900/20 space-y-4">
+        <table class="w-full">
+          <thead>
+          <tr>
+            <th class="text-center">Collect</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Priority</th>
+          </tr>
+          </thead>
+          <tbody id="collectableList">
+          <!-- Collectable items will be added here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Group Auto buy-->
+    <div id="group-miscellaneous">
+      <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
+        Auto buy
+      </div>
+
+      <div
+        class="relative grid grid-cols-5 gap-4 border border-zinc-800 p-5 bg-zinc-900/20 mb-5"
+      >
+        <div class="font-semibold absolute top-0 right-1 p-1 opacity-40">
+          Laser
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>RLX_1" class="w-full">RLX_1</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>RLX_1"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>RLX_1"
+            />
+          </div>
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>GLX_2" class="w-full">GLX_2</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>GLX_2"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>GLX_2"
+            />
+          </div>
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>BLX_3" class="w-full">BLX_3</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>BLX_3"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>BLX_3"
+            />
+          </div>
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>GLX_2_AS" class="w-full">GLX_2_AS</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>GLX_2_AS"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>GLX_2_AS"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="relative grid grid-cols-5 gap-4 border border-zinc-800 p-5 bg-zinc-900/20"
+      >
+        <div class="font-semibold absolute top-0 right-1 p-1 opacity-40">
+          Rocket
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>KEP_410" class="w-full">KEP_410</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>KEP_410"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>KEP_410"
+            />
+          </div>
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>NC_30" class="w-full">NC_30</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>NC_30"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>NC_30"
+            />
+          </div>
+        </div>
+
+        <!-- AUTO BUY -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="autoBuy>TNC_130" class="w-full">TNC_130</label>
+          <div class="w-full">
+            <input
+              id="autoBuy>TNC_130"
+              type="checkbox"
+              class="w-fit"
+              data-storage-key="autoBuy>TNC_130"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group login -->
+    <div id="group-account">
+      <div class="font-black text-lg sticky top-0 bg-zinc-950 py-3">
+        WU - Account
+      </div>
+      <div
+        class="relative grid grid-cols-3 gap-4 border border-zinc-800 p-5 bg-zinc-900/20 mb-5"
+      >
+        <!-- MIN HP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="username">Username:</label>
+          <input id="username" type="text" data-storage-key="username"/>
+        </div>
+
+        <!-- MIN HP -->
+        <div class="flex items-center gap-1 mt-1">
+          <label for="password">Password:</label>
+          <input
+            id="password"
+            type="password"
+            data-storage-key="password"
+          />
+        </div>
+
+        <!-- SERVER -->
+        <div class="flex items-center gap-1">
+          <label for="server">Server:</label>
+          <select id="server" data-storage-key="server">
+            <option value="eu1">EU1</option>
+            <option value="na1">NA1</option>
+            <option value="tr1">TR1</option>
+            <option value="test1">Test</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

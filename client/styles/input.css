@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-zinc-950 text-zinc-300;
+  }
+
+  select {
+    @apply w-full py-1  rounded-md border border-gray-600 bg-[#202020] px-2 text-white  appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+  }
+
+  label {
+    @apply w-full py-1  text-right pr-3;
+  }
+
+  input {
+    @apply w-full px-2 py-1 text-white border border-gray-600 rounded-md bg-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #242424;
+  border: 1px solid rgba(193, 193, 193, 0.47);
+}
+
+select::-webkit-scrollbar {
+  width: 12px;
+}
+
+select::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+
+select::-webkit-scrollbar-thumb {
+  background-color: #242424;
+  border: 1px solid rgba(193, 193, 193, 0.47);
+}
+
