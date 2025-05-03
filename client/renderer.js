@@ -307,8 +307,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let scaleY = 1;
 
   const scalePosition = ({ x, y }) => ({
-    x: x * scaleX,
-    y: y * scaleY,
+    x: Math.round(x * scaleX),
+    y: Math.round(y * scaleY),
   });
 
   const drawEnemy = ({ color = "red", width = 5, height = 5, x, y }) => {
@@ -456,20 +456,24 @@ document.addEventListener("DOMContentLoaded", () => {
     serverId: JSON.parse(localStorage.getItem("server")) || "eu1",
   });
 
+  canvas.addEventListener("click", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / canvas.width) * currentMapWidth;
+    const y = ((event.clientY - rect.top) / canvas.height) * currentMapHeight;
+    client.scene.move(x, y);
+  });
 
   const render = () => {
     if (!client.client.clientLoaded) return requestAnimationFrame(render);
     if (!client.scene.playerId) return requestAnimationFrame(render);
+    playerId = client.scene.playerId
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentMapWidth = client.scene.currentMapWidth || currentMapWidth;
     currentMapHeight = client.scene.currentMapHeight || currentMapHeight;
 
     scaleX = canvas.width / currentMapWidth;
     scaleY = canvas.height / currentMapHeight;
-
-    playerId = client.scene.playerId
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawText({
       text: client.stats.messageState,
