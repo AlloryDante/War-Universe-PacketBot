@@ -19,6 +19,9 @@ module.exports = class Stats {
     // Resource tracking
     this.startCredits = 0;
     this.startPlt = 0;
+    this.startHnr = 0;
+    this.startExp = 0;
+
     this.startTime = Date.now();
 
     // Initialize starting resources once user data is loaded
@@ -32,6 +35,8 @@ module.exports = class Stats {
     }
     this.startCredits = this.user.credits;
     this.startPlt = this.user.plt;
+    this.startHnr = this.user.honor;
+    this.startExp = this.user.experience;
   }
 
   incrementKills() {
@@ -70,6 +75,19 @@ module.exports = class Stats {
     const pltDifference = this.user.plt - this.startPlt;
     return hoursSinceStart === 0 ? 0 : Math.round(pltDifference / hoursSinceStart);
   }
+
+  getHnrPerHour() {
+    const hoursSinceStart = (Date.now() - this.startTime) / (1000 * 60 * 60);
+    const hnrDifference = this.user.honor - this.startHnr;
+    return hoursSinceStart === 0 ? 0 : Math.round(hnrDifference / hoursSinceStart);
+  }
+
+  getExpPerHour() {
+    const hoursSinceStart = (Date.now() - this.startTime) / (1000 * 60 * 60);
+    const expDifference = this.user.experience - this.startExp;
+    return hoursSinceStart === 0 ? 0 : Math.round(expDifference / hoursSinceStart);
+  }
+
   getCargoCapacity() {
     const playerShip = this.scene.getPlayerShip();
     const capacity = (playerShip?.cargo / playerShip?.maxCargo) * 100;
@@ -92,6 +110,8 @@ module.exports = class Stats {
       kdRatio: this.getKDRatio(),
       creditsPerHour: this.getCreditsPerHour(),
       pltPerHour: this.getPltPerHour(),
+      hnrPerHour: this.getHnrPerHour(),
+      expPerHour: this.getExpPerHour(),
       cargoBoxesCollected: this.cargoBoxesCollected,
       resourceBoxesCollected: this.resourceBoxesCollected,
       greenBoxesCollected: this.greenBoxesCollected,
