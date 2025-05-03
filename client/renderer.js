@@ -608,24 +608,41 @@ document.addEventListener("DOMContentLoaded", () => {
     if (client.scene?.isMoving) {
       const posPlayer = scalePosition({ x: player.x, y: player.y });
       const posFinal = scalePosition({ x: client.scene.targetx, y: client.scene.targety });
-      drawLine({ x1: posPlayer.x + 4, y1: posPlayer.y + 4, x2: posFinal.x + 4, y2: posFinal.y + 4, color: "rgba(255,255,255,0.68)", width: 1 });
+      drawLine({
+        x1: posPlayer.x + 4,
+        y1: posPlayer.y + 4,
+        x2: posFinal.x + 4,
+        y2: posFinal.y + 4,
+        color: "rgba(255,255,255,0.68)",
+        width: 1
+      });
     }
 
     // Stats
+    const { pltPerHour, hnrPerHour, expPerHour, creditsPerHour } = client.stats.getStats();
+
     drawText({ text: "BTC:", x: 10, y: 250, })
-    drawText({ text: client.user.credits, x: 50, y: 250, })
+    drawText({
+      text: `${client.user.credits.toLocaleString()} | (${creditsPerHour.toLocaleString()}/h)`,
+      x: 50,
+      y: 250,
+    })
 
     drawText({ text: "PLT:", x: 10, y: 265, })
-    drawText({ text: client.user.plt, x: 50, y: 265, })
+    drawText({ text: `${client.user.plt.toLocaleString()} | (${pltPerHour.toLocaleString()}/h)`, x: 50, y: 265, })
 
     drawText({ text: "HNR:", x: 10, y: 280, })
-    drawText({ text: client.user.honor, x: 50, y: 280, })
+    drawText({ text: `${client.user.honor.toLocaleString()} | (${hnrPerHour.toLocaleString()}/h)`, x: 50, y: 280, })
 
     drawText({ text: "EXP:", x: 10, y: 295, })
-    drawText({ text: client.user.experience, x: 50, y: 295, })
+    drawText({
+      text: `${client.user.experience.toLocaleString()} | (${expPerHour.toLocaleString()}/h)`,
+      x: 50,
+      y: 295,
+    })
 
     drawText({ text: "Deaths:", x: 10, y: 310, })
-    drawText({ text: client.stats.deaths, x: 50, y: 310, })
+    drawText({ text: client.stats.deaths.toLocaleString(), x: 50, y: 310, })
 
     requestAnimationFrame(render);
   }
