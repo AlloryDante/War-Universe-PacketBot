@@ -623,20 +623,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawText({ text: "BTC:", x: 10, y: 250, })
     drawText({
-      text: `${client.user.credits.toLocaleString()} | (${creditsPerHour.toLocaleString()}/h)`,
+      text: `${client.user.credits.toLocaleString()} (${creditsPerHour.toLocaleString()}/h)`,
       x: 50,
       y: 250,
     })
 
     drawText({ text: "PLT:", x: 10, y: 265, })
-    drawText({ text: `${client.user.plt.toLocaleString()} | (${pltPerHour.toLocaleString()}/h)`, x: 50, y: 265, })
+    drawText({ text: `${client.user.plt.toLocaleString()} (${pltPerHour.toLocaleString()}/h)`, x: 50, y: 265, })
 
     drawText({ text: "HNR:", x: 10, y: 280, })
-    drawText({ text: `${client.user.honor.toLocaleString()} | (${hnrPerHour.toLocaleString()}/h)`, x: 50, y: 280, })
+    drawText({ text: `${client.user.honor.toLocaleString()} (${hnrPerHour.toLocaleString()}/h)`, x: 50, y: 280, })
 
     drawText({ text: "EXP:", x: 10, y: 295, })
     drawText({
-      text: `${client.user.experience.toLocaleString()} | (${expPerHour.toLocaleString()}/h)`,
+      text: `${client.user.experience.toLocaleString()} (${expPerHour.toLocaleString()}/h)`,
       x: 50,
       y: 295,
     })
